@@ -9,9 +9,9 @@ It contains a contiguous 300-second light declaration, a cryptographically
 identified audio asset, representative observed BLE commands, three explicit
 clock anchors, five AVE-compatible evidence objects, and bounded limitations.
 
-The full schedule is a functional reconstruction at L2 with score 0.97. Its
-captured prefix has L4 BLE transport confirmation through 68.404 seconds. It is
-not L5 because no optical measurement has yet connected BLE timing fields to
+The full schedule now has L4 BLE transport confirmation with score 0.98. An
+uninterrupted natural five-minute run covered every declared active segment. It
+is not L5 because no optical measurement has yet connected BLE timing fields to
 photodiode-observed output.
 
 ## Deterministic light schedule
@@ -33,6 +33,17 @@ sequence-paired timing packets, 394 were byte-for-byte identical; all remaining
 timing fields differed by at most one microsecond. Mean packet displacement was
 0.924 ms and maximum displacement was 4.732 ms. No physical brightness-button
 notification was observed in either run.
+
+A third run on 2026-09-19 completed naturally. It contained 2,962 nonzero
+timing writes, covered all 32 declared active segments, entered the declared
+off interval at the end, and emitted the inactive-state command at 299.492
+seconds on the BLE capture clock. Mapping the first nonzero write to declared
+program time 1.500 seconds produced these full-run residuals:
+
+| Comparison | Mean absolute error | Maximum absolute error |
+| --- | ---: | ---: |
+| Frequency | 0.000903 Hz | 0.021239 Hz |
+| Duty cycle | 0.000049 | 0.000553 |
 
 ## Audio identity and structure
 
@@ -60,19 +71,19 @@ anchors program zero to media-position zero with 1 ms argument-resolution
 uncertainty. That anchor applies at the app/native execution layers and does
 not claim BLE-arrival or photon-level simultaneity.
 
-Runtime run 2 adds two bounded observations:
+The uninterrupted full run adds two bounded observations:
 
 | BLE clock from active write | Media position | Difference | Assigned uncertainty |
 | ---: | ---: | ---: | ---: |
-| 1,449.590 ms | 1,334 ms | 115.590 ms | 100 ms |
-| 60,130.901 ms | 60,013 ms | 117.901 ms | 100 ms |
+| 1,460.828 ms | 1,322 ms | 138.828 ms | 20 ms |
+| 297,964.395 ms | 297,830 ms | 134.395 ms | 20 ms |
 
-The first row pairs the first nonzero timing write with a MediaSession log one
-millisecond away in wall-clock time. The second converts a later MediaSession
-position observation to the same HCI elapsed clock. The approximately 116–118
-ms offset is stable across these observations, but Android emits MediaSession
-state asynchronously. It is therefore evidence for clock association, not a
-precise device-to-photon latency measurement.
+The first row pairs the first nonzero timing write with a MediaSession log about
+five milliseconds away in wall-clock time. The second pairs the final zero
+timing write with a MediaSession log about one millisecond away. The BLE/media
+offset changes by only 4.433 ms across almost the entire session, but Android
+emits MediaSession state asynchronously. It is therefore evidence for clock
+association, not a precise device-to-photon latency measurement.
 
 ## Version verification and limitations
 

@@ -26,7 +26,6 @@ MODEL = ACQUISITION / "apktool/smali_classes4/com/lumenate/lumenate/model/a.smal
 OUTPUT = ROOT / "reports/lumenate_nova/exports/vitality-5min-empirical-0.2.0.json"
 
 AUDIO_SHA256 = "b24513faf9f3e920d9addf725563bd236fa3b33f6c1fa91949bcf6011eda7c41"
-CAPTURE_PREFIX_END_MS = 68404
 FIRST_PACKET_AFTER_ACTIVE_MS = 1449.590
 
 
@@ -35,7 +34,8 @@ def stable_id(prefix: str, label: str) -> str:
 
 
 E_DECLARATION = stable_id("ave", "vitality-5m-session-declaration-v7.2.1")
-E_BLE = stable_id("ave", "vitality-5m-ble-repeatability-2026-09-17")
+E_REPEAT = stable_id("ave", "vitality-5m-ble-repeatability-2026-09-17")
+E_BLE = stable_id("ave", "vitality-5m-full-ble-confirmation-2026-09-19")
 E_SYNC = stable_id("ave", "vitality-5m-media-ble-clock-association-run2")
 E_AUDIO = stable_id("ave", f"vitality-5m-audio-{AUDIO_SHA256}")
 E_AVEPULSE = "ave_cff3179ab694b1b9"
@@ -93,9 +93,7 @@ def make_segments(parsed: list[Segment]) -> list[dict[str, Any]]:
     result = []
     for index, segment in enumerate(parsed, 1):
         start_ms = round(segment.start_s * 1000)
-        evidence_ids = [E_DECLARATION]
-        if start_ms < CAPTURE_PREFIX_END_MS:
-            evidence_ids.append(E_BLE)
+        evidence_ids = [E_DECLARATION, E_BLE]
         result.append(
             {
                 "segment_id": f"vitality-segment-{index:03d}",
@@ -117,9 +115,7 @@ def make_transitions(parsed: list[Segment]) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     for index in range(1, len(parsed)):
         at_ms = round(parsed[index].start_s * 1000)
-        evidence_ids = [E_DECLARATION]
-        if at_ms < CAPTURE_PREFIX_END_MS:
-            evidence_ids.append(E_BLE)
+        evidence_ids = [E_DECLARATION, E_BLE]
         result.append(
             {
                 "transition_id": f"vitality-boundary-{index:03d}",
@@ -141,9 +137,7 @@ def make_transitions(parsed: list[Segment]) -> list[dict[str, Any]]:
             parameters["frequency_hz"] = expression_json(segment.frequency)
         if segment.duty.kind == "linear":
             parameters["duty_cycle"] = expression_json(segment.duty)
-        evidence_ids = [E_DECLARATION]
-        if round(segment.start_s * 1000) < CAPTURE_PREFIX_END_MS:
-            evidence_ids.append(E_BLE)
+        evidence_ids = [E_DECLARATION, E_BLE]
         result.append(
             {
                 "transition_id": f"vitality-interpolation-{index:03d}",
@@ -172,7 +166,7 @@ def representative_commands() -> list[dict[str, Any]]:
             "characteristic_uuid": "att-handle-0x0039",
             "payload_hex": "0a",
             "interpretation": "Observed active-state write.",
-            "evidence_ids": [E_BLE],
+            "evidence_ids": [E_REPEAT],
         }
     ]
     with (RUN / "vitality-repeatability.tsv").open(newline="", encoding="utf-8") as handle:
@@ -195,7 +189,7 @@ def representative_commands() -> list[dict[str, Any]]:
                     f"Observed little-endian timing write: period={period_us} us, "
                     f"on-time={on_time_us} us, constant-on={row['constant2_ppm']} ppm."
                 ),
-                "evidence_ids": [E_BLE],
+                "evidence_ids": [E_REPEAT],
             }
         )
     commands.append(
@@ -209,7 +203,7 @@ def representative_commands() -> list[dict[str, Any]]:
             "characteristic_uuid": "att-handle-0x0039",
             "payload_hex": "00",
             "interpretation": "Observed operator-triggered inactive-state write.",
-            "evidence_ids": [E_BLE],
+            "evidence_ids": [E_REPEAT],
         }
     )
     return commands
@@ -266,12 +260,34 @@ def make_evidence(segment_count: int) -> list[dict[str, Any]]:
             ],
             {"decompiled_app_version": "7.2.1", "program_language": "s(start,end,frequency,duty)"},
             0.99,
-            "Exact parse of the acquired runtime-version declaration with dynamic prefix agreement.",
+            "Exact parse of the acquired runtime-version declaration with full-duration BLE agreement.",
             {"source_id": "session-model-smali-v7.2.1"},
-            ["Direct transport confirmation ends at 68.404 seconds; the remaining declaration was not executed for a full capture."],
+            ["Transport confirmation is not physical optical confirmation."],
         ),
         evidence_object(
             E_BLE,
+            "measurement",
+            "full_duration_ble_strobe_confirmation",
+            "A natural five-minute run emitted timing writes across every declared active segment.",
+            ["light-control"],
+            {"start": 0, "end": 299.492362},
+            [
+                {"name": "nonzero_timing_write_count", "value": 2962, "unit": "count"},
+                {"name": "observed_active_segment_count", "value": 32, "unit": "count"},
+                {"name": "declared_active_segment_count", "value": 32, "unit": "count"},
+                {"name": "mean_absolute_frequency_error", "value": 0.0009025113, "unit": "Hz"},
+                {"name": "maximum_absolute_frequency_error", "value": 0.0212385384, "unit": "Hz"},
+                {"name": "mean_absolute_duty_error", "value": 0.0000490948, "unit": "ratio"},
+                {"name": "maximum_absolute_duty_error", "value": 0.0005526836, "unit": "ratio"},
+            ],
+            {"runtime_app_version": "7.2.1", "alignment": "first nonzero write maps to program time 1.500 s"},
+            0.995,
+            "Decode all 12-byte timing writes and compare them with the declared segment interpolation.",
+            {"source_id": "vitality-full-run-app-writes", "hci_source_id": "vitality-full-run-btsnoop"},
+            ["BLE arrival timestamps are not optical-emission timestamps."],
+        ),
+        evidence_object(
+            E_REPEAT,
             "measurement",
             "ble_strobe_timing_repeatability",
             "Two controlled starts reproduced the Vitality timing stream through the shorter run.",
@@ -296,21 +312,22 @@ def make_evidence(segment_count: int) -> list[dict[str, Any]]:
             "media_position_to_strobe_clock_alignment",
             "Static syncMe control flow and runtime media-position observations associate the audio and light clocks.",
             ["audio", "light-control"],
-            {"start": 0, "end": 60.013},
+            {"start": 0, "end": 299.350},
             [
-                {"name": "first_runtime_offset", "value": 115.59, "unit": "ms"},
-                {"name": "late_runtime_offset", "value": 117.901, "unit": "ms"},
-                {"name": "anchor_uncertainty", "value": 100, "unit": "ms"},
+                {"name": "first_full_run_ble_media_offset", "value": 138.828, "unit": "ms"},
+                {"name": "late_full_run_ble_media_offset", "value": 134.395, "unit": "ms"},
+                {"name": "full_run_offset_change", "value": -4.433, "unit": "ms"},
+                {"name": "anchor_uncertainty", "value": 20, "unit": "ms"},
             ],
-            {"sync_function": "StrobeManager.syncMe(mediaPositionMs)", "runtime_run": 2},
-            0.87,
-            "Control-flow association plus two Android media-position/HCI wall-clock pairs.",
-            {"source_ids": ["session-service-position-callback-v7.2.1", "vitality-logcat", "vitality-btsnoop"]},
+            {"sync_function": "StrobeManager.syncMe(mediaPositionMs)", "runtime_run": "2026-09-19-full"},
+            0.95,
+            "Control-flow association plus start and end Android media-position/HCI wall-clock pairs.",
+            {"source_ids": ["session-service-position-callback-v7.2.1", "vitality-full-run-dumpstate", "vitality-full-run-btsnoop"]},
             [
                 "MediaSession state is logged asynchronously and may be stale at emission time.",
-                "The 100 ms runtime uncertainty does not include unknown firmware-to-photon latency.",
+                "The 20 ms runtime uncertainty does not include unknown firmware-to-photon latency.",
             ],
-            [E_DECLARATION, E_BLE],
+            [E_DECLARATION, E_BLE, E_REPEAT],
         ),
         evidence_object(
             E_AUDIO,
@@ -404,6 +421,15 @@ def build_document() -> dict[str, Any]:
                 "unit": "ms",
                 "origin": "Run 2 active-state write at HCI epoch 1789660168.039099.",
                 "resolution_ms": 0.001,
+                "evidence_ids": [E_REPEAT],
+            },
+            {
+                "clock_id": "ble-full-run-capture-ms",
+                "kind": "ble_capture",
+                "monotonic": True,
+                "unit": "ms",
+                "origin": "Full-run active-state write at HCI epoch 1789832752.288698.",
+                "resolution_ms": 0.001,
                 "evidence_ids": [E_BLE],
             },
         ],
@@ -422,23 +448,23 @@ def build_document() -> dict[str, Any]:
                 "evidence_ids": [E_SYNC],
             },
             {
-                "anchor_id": "run2-first-light-write-to-media",
-                "from_clock_id": "ble-run2-capture-ms",
-                "from_time_ms": 1449.590,
+                "anchor_id": "full-run-first-light-write-to-media",
+                "from_clock_id": "ble-full-run-capture-ms",
+                "from_time_ms": 1460.828,
                 "to_clock_id": "audio-media-position-ms",
-                "to_time_ms": 1334,
-                "uncertainty_ms": 100,
-                "method": "First nonzero BLE timing write paired to the adjacent Android MediaSession position log (1 ms wall-clock separation).",
+                "to_time_ms": 1322,
+                "uncertainty_ms": 20,
+                "method": "First nonzero BLE timing write paired to the adjacent Android MediaSession position log (approximately 5 ms wall-clock separation).",
                 "evidence_ids": [E_SYNC, E_BLE],
             },
             {
-                "anchor_id": "run2-sixty-second-media-observation",
-                "from_clock_id": "ble-run2-capture-ms",
-                "from_time_ms": 60130.901,
+                "anchor_id": "full-run-final-light-zero-to-media",
+                "from_clock_id": "ble-full-run-capture-ms",
+                "from_time_ms": 297964.395,
                 "to_clock_id": "audio-media-position-ms",
-                "to_time_ms": 60013,
-                "uncertainty_ms": 100,
-                "method": "Android MediaSession position log converted to elapsed HCI capture time using the shared device wall clock.",
+                "to_time_ms": 297830,
+                "uncertainty_ms": 20,
+                "method": "Final zero timing write paired to the adjacent Android MediaSession position log (approximately 1 ms wall-clock separation).",
                 "evidence_ids": [E_SYNC, E_BLE],
             },
         ],
@@ -453,25 +479,28 @@ def build_document() -> dict[str, Any]:
                 {"source_id": "vitality-btsnoop", "sha256": "a3a2073a2dbd1fe4d3bec2993f62b97d14e8f196f9089732bef915a59bbfbfbc"},
                 {"source_id": "vitality-logcat", "sha256": "52f29edebe701e0bfa18269bf834c880ed247841a637ca1ce733775fef5495f3"},
                 {"source_id": "vitality-repeatability-tsv", "sha256": "7061c4bec4dc383e8ff9f5cfd308b17a0f476a64e29e222d6fb9d116284457ad"},
+                {"source_id": "vitality-full-run-btsnoop", "sha256": "0792646c160d944e295479f62905923746453c49174e89de8e873891dd585913"},
+                {"source_id": "vitality-full-run-app-writes", "sha256": "7ce640a4ad51b162af4b8c5881b3851983cf390ee92e3ea0f04fbe9d97ba8288"},
+                {"source_id": "vitality-full-run-dumpstate", "sha256": "d0a0f27f46f128d22218925e953748e442206eaaf377767be80d5876c4c55f83"},
                 {"source_id": "ave-pulse-analysis", "sha256": "65d8b0036b8856291b4f6c2e102a20dcc463772ee988f2d7e531b569aab1da31"},
             ],
             "acquisition_notes": [
                 "Two unfiltered Android Bluetooth HCI snoop runs were captured without physical brightness-button input.",
+                "A third uninterrupted five-minute run completed naturally and covered all 32 declared active segments.",
                 "The runtime package and decompiled declaration are both Lumenate 7.2.1 (400).",
                 "The 7.2.1 Vitality declaration and StrobeManager are byte-for-byte identical to their acquired 7.0.0 counterparts.",
                 "Signed media URLs, Bluetooth addresses, phone identifiers, and audio bytes are intentionally excluded.",
             ],
         },
         "confidence": {
-            "level": "L2",
-            "score": 0.97,
-            "method": "The full timeline is reconstructed from the acquired runtime-version APK (L2); its first 68.404 seconds have BLE transport confirmation (L4), but no optical measurement exists.",
+            "level": "L4",
+            "score": 0.98,
+            "method": "The full runtime-version declaration is confirmed across all 32 active segments in a natural five-minute BLE capture; no optical measurement exists.",
         },
         "limitations": [
             "No photodiode measurement was made; firmware behavior and actual optical output remain unverified.",
-            "BLE writes confirm only the captured prefix, not the full 300-second execution.",
             "Brightness-button level, LED intensity calibration, color, and firmware version are unknown.",
-            "Runtime audio/light anchors carry 100 ms uncertainty and exclude unknown firmware-to-photon latency.",
+            "Runtime audio/light anchors carry 20 ms uncertainty and exclude unknown firmware-to-photon latency.",
             "AVE classified the soundtrack as irregular transients; this does not establish intent, efficacy, or physiological response.",
         ],
         "ave_evidence": make_evidence(len(parsed)),

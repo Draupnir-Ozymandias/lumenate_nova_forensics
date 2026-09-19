@@ -29,6 +29,6 @@ def test_vitality_empirical_export_builds_and_validates() -> None:
     assert len(document["segments"]) == 34
     assert document["segments"][0]["pulse"] is None
     assert document["segments"][-1]["pulse"] is None
-    assert document["confidence"]["level"] == "L2"
+    assert document["confidence"]["level"] == "L4"
     assert any(clock["kind"] == "media_position" for clock in document["clocks"])
-    assert any(anchor["uncertainty_ms"] == 100 for anchor in document["sync_anchors"])
+    assert any(anchor["uncertainty_ms"] == 20 for anchor in document["sync_anchors"])
