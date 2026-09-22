@@ -78,7 +78,7 @@ immutable; any validation or semantic change requires a new contract version.
 | N1 control path | Bounded report complete | Close remaining unknown native scheduling edges and test the extended live path if suitable content appears. |
 | N2 BLE/state machine | Core session path documented | Resolve remaining custom-characteristic roles and characterize loss, recovery, and disconnect causes. |
 | N3 session/synchronization | Closed for the bounded Vitality export | A photon-level clock anchor is still required for precise device latency, not for the existing importer. |
-| N4 native/firmware boundary | Partially complete | Native scheduling responsibility and device-side firmware validation policy remain unresolved. |
+| N4 native/firmware boundary | Bounded report complete | Device-side buffering and firmware validation/boot policy remain unresolved. |
 | N5 physical validation | Provisional camera-based confirmation | A photodiode/ADC or oscilloscope is needed for calibrated duty, intensity, subframe phase, and packet-to-photon timing. |
 | N6 AVE integration | `0.2.0` released | Additional fixtures may be added without changing the frozen schema. |
 
@@ -103,13 +103,14 @@ immutable; any validation or semantic change requires a new contract version.
 The highest-value documentary work is now:
 
 1. an N0 closeout manifest covering the remaining sanitized inventories;
-2. an N4 native/firmware-boundary report focused on scheduling, buffering, and
-   device-side validation responsibilities;
+2. a calibrated N5 packet-to-photon experiment when suitable sensors become
+   available; and
 3. a deliberately versioned successor only if new evidence requires a contract
    change.
 
-The N1 control path and N2 BLE/state-machine reports are now published as
-`N1_CONTROL_PATH.md` and `N2_BLE_PROTOCOL_STATE_MACHINE.md`.
+The N1 control path, N2 BLE/state-machine, and bounded N4 responsibility reports
+are now published as `N1_CONTROL_PATH.md`,
+`N2_BLE_PROTOCOL_STATE_MACHINE.md`, and `N4_NATIVE_FIRMWARE_BOUNDARY.md`.
 
 Further random track scouting is lower-value unless a new app, content catalog,
 or firmware version exposes an independent-side program. A future firmware

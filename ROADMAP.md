@@ -71,6 +71,9 @@ Targets:
 
 ## N4 — Native engine and firmware boundary
 
+**Status:** bounded native/firmware responsibility report complete; device-side
+buffering and boot/update validation policy remain unresolved.
+
 Use Ghidra and focused runtime instrumentation only after N1 establishes semantics.
 
 Targets:
