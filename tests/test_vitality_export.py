@@ -31,4 +31,13 @@ def test_vitality_empirical_export_builds_and_validates() -> None:
     assert document["segments"][-1]["pulse"] is None
     assert document["confidence"]["level"] == "L4"
     assert any(clock["kind"] == "media_position" for clock in document["clocks"])
+    assert any(clock["kind"] == "optical_measurement" for clock in document["clocks"])
     assert any(anchor["uncertainty_ms"] == 20 for anchor in document["sync_anchors"])
+    optical = next(
+        evidence
+        for evidence in document["ave_evidence"]
+        if evidence["evidence_type"] == "four_emitter_optical_synchrony"
+    )
+    assert optical["provenance"]["input_sha256"] == (
+        "d332a84e2e363d56d0ddd2a248a4393169c3431ca60ee7c45b5aaf68c3a881fd"
+    )

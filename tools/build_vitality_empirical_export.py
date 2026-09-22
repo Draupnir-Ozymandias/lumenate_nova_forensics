@@ -38,6 +38,7 @@ E_REPEAT = stable_id("ave", "vitality-5m-ble-repeatability-2026-09-17")
 E_BLE = stable_id("ave", "vitality-5m-full-ble-confirmation-2026-09-19")
 E_SYNC = stable_id("ave", "vitality-5m-media-ble-clock-association-run2")
 E_AUDIO = stable_id("ave", f"vitality-5m-audio-{AUDIO_SHA256}")
+E_OPTICAL = stable_id("ave", "vitality-5m-s21-optical-2026-09-20-1-500")
 E_AVEPULSE = "ave_cff3179ab694b1b9"
 
 
@@ -348,6 +349,46 @@ def make_evidence(segment_count: int) -> list[dict[str, Any]]:
             {"source_id": "vitality-5min-audio", "input_sha256": AUDIO_SHA256},
             ["The copyrighted audio bytes remain local-only and are not embedded in this export."],
         ),
+        evidence_object(
+            E_OPTICAL,
+            "measurement",
+            "four_emitter_optical_synchrony",
+            "A full-session 120 fps S21 recording physically measured synchronized output across all four Nova emitters.",
+            ["light-emitter-1", "light-emitter-2", "light-emitter-3", "light-emitter-4"],
+            {"start": 0, "end": 306.244822},
+            [
+                {"name": "video_frame_rate", "value": 120, "unit": "frames/second"},
+                {"name": "frame_count", "value": 36732, "unit": "count"},
+                {"name": "emitter_1_rising_edges", "value": 3123, "unit": "count"},
+                {"name": "emitter_2_rising_edges", "value": 3123, "unit": "count"},
+                {"name": "emitter_3_rising_edges", "value": 3122, "unit": "count"},
+                {"name": "emitter_4_rising_edges", "value": 3123, "unit": "count"},
+                {"name": "same_frame_four_emitter_rising_edges", "value": 3091, "unit": "count"},
+                {"name": "binary_disagreement_frames", "value": 52, "unit": "count"},
+                {"name": "binary_disagreement_fraction", "value": 0.00142, "unit": "ratio"},
+                {"name": "constant_segment_frequency", "value": 10.4644, "unit": "Hz"},
+            ],
+            {
+                "camera": "Samsung Galaxy S21 Ultra 5G",
+                "resolution": "1920x1080",
+                "operator_reported_iso": 50,
+                "operator_reported_shutter_seconds": 0.002,
+                "classification": "50x50 core-region mean luma > 30",
+            },
+            0.98,
+            "Threshold-robust per-frame luma analysis of four spatially separate emitter cores.",
+            {
+                "source_id": "vitality-s21-120fps-1-500",
+                "input_sha256": "d332a84e2e363d56d0ddd2a248a4393169c3431ca60ee7c45b5aaf68c3a881fd",
+            },
+            [
+                "The 8.33 ms video frame interval cannot exclude subframe phase offsets.",
+                "A 1/500-second exposure can miss narrow pulses between frames.",
+                "The recording is not a calibrated intensity or duty-cycle measurement.",
+                "The exposure settings are operator-recalled rather than independently embedded in the file.",
+            ],
+            [E_DECLARATION, E_BLE],
+        ),
         pulse,
     ]
 
@@ -432,6 +473,15 @@ def build_document() -> dict[str, Any]:
                 "resolution_ms": 0.001,
                 "evidence_ids": [E_BLE],
             },
+            {
+                "clock_id": "optical-video-ms",
+                "kind": "optical_measurement",
+                "monotonic": True,
+                "unit": "ms",
+                "origin": "Start of the S21 120 fps Vitality replication video.",
+                "resolution_ms": 8.333333,
+                "evidence_ids": [E_OPTICAL],
+            },
         ],
         "segments": make_segments(parsed),
         "transitions": make_transitions(parsed),
@@ -483,22 +533,24 @@ def build_document() -> dict[str, Any]:
                 {"source_id": "vitality-full-run-app-writes", "sha256": "7ce640a4ad51b162af4b8c5881b3851983cf390ee92e3ea0f04fbe9d97ba8288"},
                 {"source_id": "vitality-full-run-dumpstate", "sha256": "d0a0f27f46f128d22218925e953748e442206eaaf377767be80d5876c4c55f83"},
                 {"source_id": "ave-pulse-analysis", "sha256": "65d8b0036b8856291b4f6c2e102a20dcc463772ee988f2d7e531b569aab1da31"},
+                {"source_id": "vitality-s21-120fps-1-500", "sha256": "d332a84e2e363d56d0ddd2a248a4393169c3431ca60ee7c45b5aaf68c3a881fd"},
             ],
             "acquisition_notes": [
                 "Two unfiltered Android Bluetooth HCI snoop runs were captured without physical brightness-button input.",
                 "A third uninterrupted five-minute run completed naturally and covered all 32 declared active segments.",
                 "The runtime package and decompiled declaration are both Lumenate 7.2.1 (400).",
                 "The 7.2.1 Vitality declaration and StrobeManager are byte-for-byte identical to their acquired 7.0.0 counterparts.",
+                "A complementary full-session S21 recording physically measured the four emitter cores at approximately 120 fps.",
                 "Signed media URLs, Bluetooth addresses, phone identifiers, and audio bytes are intentionally excluded.",
             ],
         },
         "confidence": {
             "level": "L4",
             "score": 0.98,
-            "method": "The full runtime-version declaration is confirmed across all 32 active segments in a natural five-minute BLE capture; no optical measurement exists.",
+            "method": "The full runtime-version declaration is confirmed across all 32 active segments in a natural five-minute BLE capture and a separate full-session S21 recording physically confirms frequency and four-emitter synchrony at 8.33 ms resolution.",
         },
         "limitations": [
-            "No photodiode measurement was made; firmware behavior and actual optical output remain unverified.",
+            "No photodiode measurement was made; S21 video physically verifies frequency and frame-scale synchrony but cannot resolve subframe phase or provide calibrated duty cycle or intensity.",
             "Brightness-button level, LED intensity calibration, color, and firmware version are unknown.",
             "Runtime audio/light anchors carry 20 ms uncertainty and exclude unknown firmware-to-photon latency.",
             "AVE classified the soundtrack as irregular transients; this does not establish intent, efficacy, or physiological response.",
