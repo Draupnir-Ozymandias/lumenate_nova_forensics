@@ -7,12 +7,15 @@ The Vitality 5-minute session is represented by the first empirical candidate
 `reports/lumenate_nova/exports/vitality-5min-empirical-0.2.0.json`.
 It contains a contiguous 300-second light declaration, a cryptographically
 identified audio asset, representative observed BLE commands, three explicit
-clock anchors, five AVE-compatible evidence objects, and bounded limitations.
+clock anchors, seven AVE-compatible evidence objects, and bounded limitations.
 
 The full schedule now has L4 BLE transport confirmation with score 0.98. An
 uninterrupted natural five-minute run covered every declared active segment. It
-is not L5 because no optical measurement has yet connected BLE timing fields to
-photodiode-observed output.
+remains L4 overall because the later optical recordings were separate runs and
+did not connect individual BLE packets to emitted photons on one shared clock.
+Those recordings nevertheless provide direct physical corroboration of the
+reconstructed frequency and four-emitter synchrony at approximately 8.33 ms
+video resolution.
 
 ## Deterministic light schedule
 
@@ -85,6 +88,25 @@ offset changes by only 4.433 ms across almost the entire session, but Android
 emits MediaSession state asynchronously. It is therefore evidence for clock
 association, not a precise device-to-photon latency measurement.
 
+## Physical optical corroboration
+
+Two full-session Galaxy S21 Ultra recordings independently sampled Vitality at
+approximately 120 fps. The ISO 50, 1/500-second replication produced 3,123,
+3,123, 3,122, and 3,123 rising edges across the four emitter regions; 3,091
+rising-edge frames were identical across all four. Only 52 of 36,732 frames
+(0.142%) disagreed in binary state, with pairwise luma correlations from 0.99860
+to 0.99998. The declared constant 10.5 Hz segment measured 10.4644 Hz on all
+four regions, agreeing with the separate 1/2000-second full run and the pilot.
+
+This is direct physical evidence of matched four-emitter timing and a close
+frequency correspondence. It is not a calibrated intensity or duty-cycle
+measurement: the rolling-shutter camera samples only part of each frame period,
+can miss narrow pulses, and cannot exclude offsets shorter than one frame. The
+optical run was not simultaneous with the complete BLE run, so the cumulative
+chain remains L4 under the project's evidence-level rules. See
+`physical_validation/S21_120FPS_VITALITY_FULL.md` for acquisition hashes,
+threshold checks, and limitations.
+
 ## Version verification and limitations
 
 The runtime phone package was acquired on 2026-09-19 and verified as Lumenate
@@ -101,10 +123,15 @@ All three installed splits passed archive-integrity and APK-signature
 verification and share the same signing-certificate SHA-256 digest,
 `ee0cdc8327859eae3c13600034c74a87ab26e72dc6b91279b9952ef250d5bac8`.
 
-Firmware version, brightness calibration, LED color, physical intensity, and
+The same Nova later reported hardware revision `1.0` and firmware `1.0.4`
+directly over the standard GATT Device Information Service on 2026-09-22; the
+app UI had also displayed firmware `1.0.4` on 2026-09-21. That does not
+retroactively prove the firmware version present during the earlier Vitality
+captures, so the session export correctly leaves `device.firmware_version`
+null. Brightness calibration, LED color, physical intensity, and
 firmware-to-photon latency remain unknown. The tracked export excludes the
-signed media URL, Bluetooth addresses, phone identifiers, and copyrighted
-audio bytes.
+signed media URL, Bluetooth addresses, phone identifiers, device serial, and
+copyrighted audio bytes.
 
 ## Reproduction
 

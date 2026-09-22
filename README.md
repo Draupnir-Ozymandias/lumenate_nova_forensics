@@ -21,7 +21,7 @@ established:
   Spirit, and the offline Explore preset; and
 - an active server-mediated MCUmgr/SMP firmware-update path in Android 7.2.1.
 
-See [PROJECT.md](PROJECT.md) for the operating model, [ROADMAP.md](ROADMAP.md) for milestones, and [reports/lumenate_nova/N0_RECONNAISSANCE.md](reports/lumenate_nova/N0_RECONNAISSANCE.md) for the evidence baseline.
+See [PROJECT.md](PROJECT.md) for the operating model, [ROADMAP.md](ROADMAP.md) for milestones, [reports/lumenate_nova/N0_RECONNAISSANCE.md](reports/lumenate_nova/N0_RECONNAISSANCE.md) for the evidence baseline, and [reports/lumenate_nova/EVIDENCE_STATUS_2026-09-22.md](reports/lumenate_nova/EVIDENCE_STATUS_2026-09-22.md) for the consolidated current assessment.
 
 ## Repository map
 

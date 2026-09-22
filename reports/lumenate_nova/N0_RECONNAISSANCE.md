@@ -64,9 +64,20 @@ APKiD 3.1.0 identified R8 in all five DEX files and several anti-VM/debug checks
 ## N0 gaps
 
 - sanitized permission, SDK, endpoint, asset, and database inventories;
-- Nova firmware and content-library versions;
+- content-library version (the current Nova hardware/firmware pair is now
+  independently observed as hardware `1.0`, firmware `1.0.4`);
 - confirmed writable characteristic and packet-building code;
 - raw-evidence secret/PII review and repository-history remediation;
 - final acquisition manifest with tool versions and command exit statuses.
 
 These gaps feed N0 closeout and N1; they do not require repeating the entire acquisition.
+
+## Current-device supplement
+
+On 2026-09-22, the same Nova used in the current investigation exposed model
+`nrf52833`, hardware revision `1.0`, and firmware revision `1.0.4` through the
+standard GATT Device Information Service. The serial-number value and Bluetooth
+addresses are intentionally excluded. This supplements the 7.0.0 reconnaissance
+baseline but does not retroactively assign firmware `1.0.4` to every earlier
+capture. See `reports/lumenate_nova/NOVA_FIRMWARE_UPDATE_PATH.md` for the
+runtime check and evidence hashes.

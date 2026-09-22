@@ -6,19 +6,22 @@ Milestones are evidence gates, not calendar promises. Work may overlap, but a mi
 
 **Status:** substantially complete; sanitize and close remaining inventory gaps.
 
-Completed evidence includes the three split APK hashes, package/build inventory, five-DEX architecture, R8 detection, native-library inventory, initial JNI symbols, process-specific runtime logs, BLE connection observations, and custom characteristic UUIDs.
+Completed evidence includes the three split APK hashes, package/build inventory, five-DEX architecture, R8 detection, native-library inventory, initial JNI symbols, process-specific runtime logs, BLE connection observations, custom characteristic UUIDs, and the current Nova hardware/firmware revisions.
 
 Remaining work:
 
 - produce reviewed permission, SDK, endpoint, asset, and database summaries;
 - confirm whether the ARM APKiD scan truly has no findings or needs a corrected target;
-- record Nova firmware version and content-library version;
+- record the content-library version (hardware `1.0` and firmware `1.0.4` are
+  now directly observed for the current Nova);
 - inventory raw evidence for secrets and remove raw captures from shared Git history/index;
 - freeze a sanitized N0 report and acquisition manifest.
 
 **Exit gate:** a reviewer can reproduce the baseline from local specimens using hashes and documented commands without needing raw evidence in Git.
 
 ## N1 — Strobe and BLE control-path reconstruction
+
+**Status:** bounded end-to-end report published; native scheduling details remain.
 
 Trace the semantic bridge from session models to native timing and BLE writes.
 
@@ -35,6 +38,9 @@ Targets:
 
 ## N2 — BLE protocol and device state machine
 
+**Status:** core session-control path documented; unresolved characteristics and
+edge-case recovery remain.
+
 Capture one-variable-at-a-time experiments and infer framing semantics.
 
 Targets:
@@ -48,6 +54,8 @@ Targets:
 **Exit gate:** a command dictionary and state machine reproduce observed start/control/stop exchanges across at least three captures.
 
 ## N3 — Session, segment, and synchronization reconstruction
+
+**Status:** closed for the bounded Vitality candidate export.
 
 Join app session data, native timing state, BLE traffic, and audio timing.
 
@@ -90,6 +98,9 @@ Targets:
 **Exit gate:** at least one session has a declared → commanded → emitted comparison with quantified timing and measurement uncertainty.
 
 ## N6 — AVE integration and release
+
+**Status:** candidate producer/consumer integration complete; intentional release
+or revision remains.
 
 Publish validated device evidence without merging repositories.
 

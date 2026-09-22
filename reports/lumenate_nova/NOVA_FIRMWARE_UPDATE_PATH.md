@@ -1,7 +1,9 @@
 # Nova firmware update path (Android 7.2.1)
 
-**Status:** Static reconstruction complete; no update was requested or installed  
-**App:** Lumenate 7.2.1 (`versionCode` 400)  
+**Status:** Static reconstruction and non-invasive runtime check complete; no update was offered, requested, or installed
+
+**App:** Lumenate 7.2.1 (`versionCode` 400)
+
 **Base APK SHA-256:** `40a2cf2bff296006f2bdb0fbde1136f9e67608cbcce0dc54c8f34ba535fd8b7d`
 
 ## Result
@@ -25,6 +27,44 @@ The reconstructed path is:
 6. Convert manifest entries into MCUmgr image descriptors and transfer them over
    the standard SMP BLE service and characteristic.
 7. Report success, failure, and restart/reconnection states to the UI.
+
+The settings screen does not provide an unconditional manual “check for update”
+control. Opening the connected Nova's settings initiates the check, and the app
+only renders an “Update Nova” action when the backend result reports
+`updateAvailable = true`.
+
+## 2026-09-22 runtime verification
+
+With Nova connected to the acquired Lumenate 7.2.1 app, its settings screen
+displayed firmware `1.0.4` and no update action. A contemporaneous Android
+bugreport and Bluetooth HCI snoop log independently recorded the Device
+Information Service values:
+
+| Attribute | Observed value |
+|---|---|
+| Model number | `nrf52833` |
+| Hardware revision | `1.0` |
+| Firmware revision | `1.0.4` |
+
+The serial-number attribute and Bluetooth addresses were observed but are
+intentionally omitted. Opening the screen produced network name-resolution
+activity attributed to the Lumenate app, consistent with the automatic callable
+function check reconstructed below. Available system logging did not expose the
+callable response body, so the absence of the update action establishes only that
+the UI did not enter its `updateAvailable = true` state; it cannot distinguish a
+normal `false` response from a silently handled check failure.
+
+The BLE trace contains no SMP/MCUmgr transfer. After initial GATT discovery and
+Device Information reads, the app wrote only ordinary client-notification
+subscriptions; later packets were periodic battery notifications. There was no
+firmware-image write, SMP response, activation command, or update-induced reboot.
+
+Local, ignored raw evidence:
+
+| Artifact | SHA-256 |
+|---|---|
+| `dynamic/lumenate_nova/runs/2026-09-22_firmware-check/a35-firmware-check.zip` | `a8f870924f817e9c33150c79ecef014596faebfcc8b6c0ad4e674fa8e197ee2c` |
+| `dynamic/lumenate_nova/runs/2026-09-22_firmware-check/FS/data/log/bt/btsnoop_hci.log` | `d63253f0308cb5db5725b6c5e40a164162ae87b67494a4f841c05a87126e9729` |
 
 ## Network control plane
 
@@ -106,9 +146,11 @@ initiating the BLE install:
 5. Stop before transfer unless a separate, explicit update experiment is planned
    with uninterrupted power and recovery contingencies.
 
-At present firmware `1.0.4` was observed in the app UI during the offline Explore
-capture, but it was not established whether a newer package is available. No
-firmware package, generated URL, or OTA packet trace has yet been acquired.
+Firmware `1.0.4` has now been verified both in the app UI and directly over GATT.
+The ordinary settings workflow exposed no update action, but the callable result
+was not visible, so it remains unproven whether `1.0.4` is the latest compatible
+release. No firmware package, generated URL, or OTA packet trace has been
+acquired.
 
 ## Confidence and limitations
 
