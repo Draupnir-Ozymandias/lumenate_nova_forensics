@@ -15,6 +15,7 @@ from tools.validate_protocol_export import semantic_errors, validate_document
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACTS = ROOT / "contracts"
 AVE_SCHEMA_SHA256 = "7edee601724e13ceb2308482a9f1135acbdb850360de149f1ac009374f26ce18"
+PROTOCOL_0_2_0_SCHEMA_SHA256 = "e6b6bf3fdf9d29a7a63d1f5f059584277d1296224aff227724e9620438ed265a"
 
 
 def load_json(path: Path) -> dict:
@@ -28,8 +29,13 @@ def test_pinned_ave_schema_has_not_drifted() -> None:
     assert load_json(schema_path)["properties"]["schema_version"]["const"] == "1.0.0"
 
 
-def test_candidate_schema_is_0_2_0() -> None:
-    schema = load_json(CONTRACTS / "lumenate-protocol-export.schema.json")
+def test_released_schema_is_0_2_0_and_frozen() -> None:
+    current_path = CONTRACTS / "lumenate-protocol-export.schema.json"
+    released_path = CONTRACTS / "lumenate-protocol-export-0.2.0.schema.json"
+    assert current_path.read_bytes() == released_path.read_bytes()
+    assert hashlib.sha256(released_path.read_bytes()).hexdigest() == PROTOCOL_0_2_0_SCHEMA_SHA256
+
+    schema = load_json(released_path)
     jsonschema.validators.Draft202012Validator.check_schema(schema)
     assert schema["properties"]["schema_version"]["const"] == "0.2.0"
     assert schema["properties"]["ave_evidence_schema_version"]["const"] == "1.0.0"
@@ -40,7 +46,7 @@ def test_minimal_export_validates() -> None:
     validate_document(fixture)
 
 
-def test_aligned_export_validates_complete_candidate_shape() -> None:
+def test_aligned_export_validates_complete_released_shape() -> None:
     fixture = load_json(CONTRACTS / "examples" / "aligned-export.json")
     validate_document(fixture)
 

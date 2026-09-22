@@ -15,8 +15,8 @@ established:
 - a native strobe engine in `libstrobecontroller-lib.so`;
 - JNI entry points linking `StrobeManager` to frequency and on/off timing state;
 - a low-latency Nova BLE connection and three custom notification characteristics;
-- complete-session Vitality declaration and BLE reconstruction under contract
-  candidate `0.2.0`;
+- complete-session Vitality declaration and BLE reconstruction under released
+  contract `0.2.0`;
 - physical four-emitter synchrony measurements for Vitality, Deep Exploration,
   Spirit, and the offline Explore preset; and
 - an active server-mediated MCUmgr/SMP firmware-update path in Android 7.2.1.
@@ -41,8 +41,9 @@ Raw or proprietary evidence stays outside Git. Every publishable conclusion must
 
 ## Immediate work
 
-1. Preserve and release the candidate `0.2.0` producer/consumer contract fixtures.
-2. Acquire a firmware package through the ordinary update-check workflow without
+1. Complete the remaining N0 sanitized inventories and acquisition manifest.
+2. Acquire a firmware package through the ordinary update-check workflow if one
+   is offered, without
    initiating installation, then hash and inspect its manifest and payloads.
 3. Add verified audio/light anchors for additional sessions before cross-modal
    comparisons are generalized.

@@ -55,7 +55,7 @@ Targets:
 
 ## N3 — Session, segment, and synchronization reconstruction
 
-**Status:** closed for the bounded Vitality candidate export.
+**Status:** closed for the bounded Vitality `0.2.0` export.
 
 Join app session data, native timing state, BLE traffic, and audio timing.
 
@@ -99,8 +99,8 @@ Targets:
 
 ## N6 — AVE integration and release
 
-**Status:** candidate producer/consumer integration complete; intentional release
-or revision remains.
+**Status:** `0.2.0` producer/consumer release complete; later changes require a
+new semantic version.
 
 Publish validated device evidence without merging repositories.
 

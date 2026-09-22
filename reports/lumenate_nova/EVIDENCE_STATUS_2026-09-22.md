@@ -3,7 +3,7 @@
 ## Purpose and scope
 
 This report consolidates the publishable evidence state after the Android
-7.2.1 acquisition, controlled BLE runs, Galaxy S21 optical captures, candidate
+7.2.1 acquisition, controlled BLE runs, Galaxy S21 optical captures, released
 `0.2.0` handoff, and non-invasive firmware check. It is an evidence inventory,
 not a product-safety, clinical-efficacy, or subjective-experience assessment.
 
@@ -59,17 +59,16 @@ Evidence-object scores express confidence in the bounded measurement or
 association stated by that object. They are not probabilities of a health,
 safety, entrainment, or efficacy claim.
 
-## Candidate 0.2.0 handoff status
+## Released 0.2.0 handoff status
 
 The producer contract now explicitly represents audio identity, named clocks,
 separate light/audio origins, uncertain clock anchors, pulse shape, transitions,
 execution layers, overlaps, and unknown values. Four empirical exports validate
-against the candidate schema. AVE's consumer imports the same fixtures, retains
+against the released schema. AVE's consumer imports the same fixtures, retains
 their evidence relationships, and rejects incompatible contract versions.
 
-This satisfies the technical candidate handoff. It does not by itself make
-`0.2.0` a tagged release; schema release and changelog/versioning remain a
-separate repository decision.
+This satisfies the released producer/consumer handoff. The versioned schema is
+immutable; any validation or semantic change requires a new contract version.
 
 ## Milestone assessment
 
@@ -81,7 +80,7 @@ separate repository decision.
 | N3 session/synchronization | Closed for the bounded Vitality export | A photon-level clock anchor is still required for precise device latency, not for the existing importer. |
 | N4 native/firmware boundary | Partially complete | Native scheduling responsibility and device-side firmware validation policy remain unresolved. |
 | N5 physical validation | Provisional camera-based confirmation | A photodiode/ADC or oscilloscope is needed for calibrated duty, intensity, subframe phase, and packet-to-photon timing. |
-| N6 AVE integration | Candidate implementation complete | Release/tag policy, final release notes, and any desired additional golden fixture. |
+| N6 AVE integration | `0.2.0` released | Additional fixtures may be added without changing the frozen schema. |
 
 ## Material limitations
 
@@ -106,8 +105,8 @@ The highest-value documentary work is now:
 1. an N0 closeout manifest covering the remaining sanitized inventories;
 2. an N4 native/firmware-boundary report focused on scheduling, buffering, and
    device-side validation responsibilities;
-3. a release-readiness note when candidate contract `0.2.0` is intentionally
-   promoted or revised.
+3. a deliberately versioned successor only if new evidence requires a contract
+   change.
 
 The N1 control path and N2 BLE/state-machine reports are now published as
 `N1_CONTROL_PATH.md` and `N2_BLE_PROTOCOL_STATE_MACHINE.md`.

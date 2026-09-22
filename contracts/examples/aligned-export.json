@@ -137,7 +137,7 @@
       "evidence_level": "measurement",
       "evidence_type": "synthetic_alignment_fixture",
       "source_module": "lumenate_nova.contract_fixture",
-      "summary": "Synthetic evidence used to exercise the complete candidate contract.",
+      "summary": "Synthetic evidence used to exercise the complete released contract.",
       "scope": {"channels": ["light", "audio"], "time_range_seconds": {"start": 0, "end": 1}},
       "measurements": [{"name": "duration", "value": 1000, "unit": "ms"}],
       "context": {"synthetic": true},
