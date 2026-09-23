@@ -74,7 +74,7 @@ immutable; any validation or semantic change requires a new contract version.
 
 | Gate | Current assessment | Remaining evidence needed |
 |---|---|---|
-| N0 acquisition/reconnaissance | Substantially complete | Sanitized permission/SDK/endpoint/asset/database inventories and final acquisition manifest. |
+| N0 acquisition/reconnaissance | Closed 2026-09-22 | Reopen only for a new app acquisition or a material provenance defect. |
 | N1 control path | Bounded report complete | Close remaining unknown native scheduling edges and test the extended live path if suitable content appears. |
 | N2 BLE/state machine | Core session path documented | Resolve remaining custom-characteristic roles and characterize loss, recovery, and disconnect causes. |
 | N3 session/synchronization | Closed for the bounded Vitality export | A photon-level clock anchor is still required for precise device latency, not for the existing importer. |
@@ -102,7 +102,8 @@ immutable; any validation or semantic change requires a new contract version.
 
 The highest-value documentary work is now:
 
-1. an N0 closeout manifest covering the remaining sanitized inventories;
+1. the existing-evidence characteristic-role audit and an audio-correlated
+   packet/video clock bridge described in `NEXT_STEPS_WITHOUT_PHOTODIODE.md`;
 2. a calibrated N5 packet-to-photon experiment when suitable sensors become
    available; and
 3. a deliberately versioned successor only if new evidence requires a contract

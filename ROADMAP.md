@@ -4,20 +4,22 @@ Milestones are evidence gates, not calendar promises. Work may overlap, but a mi
 
 ## N0 — Acquisition and APK reconnaissance
 
-**Status:** substantially complete; sanitize and close remaining inventory gaps.
+**Status:** closed 2026-09-22.
 
-Completed evidence includes the three split APK hashes, package/build inventory, five-DEX architecture, R8 detection, native-library inventory, initial JNI symbols, process-specific runtime logs, BLE connection observations, custom characteristic UUIDs, and the current Nova hardware/firmware revisions.
+Completed evidence includes the three split APK hashes, package/build inventory,
+the five-DEX 7.0.0 baseline and six-DEX 7.2.1 build, R8 detection,
+native-library inventory, initial JNI symbols, process-specific runtime logs,
+BLE connection observations, custom characteristic UUIDs, and the current Nova
+hardware/firmware revisions.
 
-Remaining work:
+Closeout produced reviewed permission, SDK, endpoint, asset, database, content,
+native-library, tool, acquisition, privacy, and Git-history inventories. The
+historical ARM APKiD invocation is indeterminate and is not presented as a clean
+scan; verified extraction and Ghidra analysis supersede it for the N0 inventory.
+No tracked raw evidence or credential-shaped text required remediation.
 
-- produce reviewed permission, SDK, endpoint, asset, and database summaries;
-- confirm whether the ARM APKiD scan truly has no findings or needs a corrected target;
-- record the content-library version (hardware `1.0` and firmware `1.0.4` are
-  now directly observed for the current Nova);
-- inventory raw evidence for secrets and remove raw captures from shared Git history/index;
-- freeze a sanitized N0 report and acquisition manifest.
-
-**Exit gate:** a reviewer can reproduce the baseline from local specimens using hashes and documented commands without needing raw evidence in Git.
+**Exit gate:** met. A reviewer can reproduce the baseline from local specimens
+using hashes and documented methods without needing raw evidence in Git.
 
 ## N1 — Strobe and BLE control-path reconstruction
 

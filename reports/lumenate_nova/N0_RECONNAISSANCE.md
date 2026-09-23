@@ -61,16 +61,17 @@ APKiD 3.1.0 identified R8 in all five DEX files and several anti-VM/debug checks
 3. Nova uses a custom BLE characteristic for command/state traffic at low latency.
 4. Timing may be streamed, periodically synchronized, or buffered; current evidence does not select one architecture.
 
-## N0 gaps
+## N0 closeout
 
-- sanitized permission, SDK, endpoint, asset, and database inventories;
-- content-library version (the current Nova hardware/firmware pair is now
-  independently observed as hardware `1.0`, firmware `1.0.4`);
-- confirmed writable characteristic and packet-building code;
-- raw-evidence secret/PII review and repository-history remediation;
-- final acquisition manifest with tool versions and command exit statuses.
+N0 closed on 2026-09-22. The remaining permission, SDK, endpoint, asset,
+database, content, native-library, privacy, tool, and acquisition records are in
+`N0_INVENTORIES.md` and `N0_CLOSEOUT_MANIFEST.md`. The writable characteristic
+and packet builder were resolved by N1/N2. The repository-history and tracked
+credential audits found no material requiring a history rewrite.
 
-These gaps feed N0 closeout and N1; they do not require repeating the entire acquisition.
+The earlier ARM APKiD file is explicitly classified as an indeterminate
+historical invocation, not a clean scan. Verified extraction, native-library
+hashes, and Ghidra analysis independently establish the ARM payload used by N4.
 
 ## Current-device supplement
 

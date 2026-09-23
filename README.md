@@ -11,7 +11,8 @@ and the investigation now includes empirical BLE and optical capture. It has
 established:
 
 - a native Android Kotlin/Java application using Jetpack Compose;
-- five DEX files compiled/obfuscated with R8;
+- five DEX files in the 7.0.0 baseline and six in the current 7.2.1 build,
+  compiled/obfuscated with R8;
 - a native strobe engine in `libstrobecontroller-lib.so`;
 - JNI entry points linking `StrobeManager` to frequency and on/off timing state;
 - a low-latency Nova BLE connection and three custom notification characteristics;
@@ -41,14 +42,19 @@ Raw or proprietary evidence stays outside Git. Every publishable conclusion must
 
 ## Immediate work
 
-1. Complete the remaining N0 sanitized inventories and acquisition manifest.
-2. Acquire a firmware package through the ordinary update-check workflow if one
-   is offered, without
-   initiating installation, then hash and inspect its manifest and payloads.
-3. Add verified audio/light anchors for additional sessions before cross-modal
-   comparisons are generalized.
-4. Reserve a controlled OTA capture for a separately approved experiment with
-   uninterrupted power and recovery contingencies.
+1. Resolve the remaining custom-characteristic roles from existing HCI and
+   current-version smali.
+2. Build one audio-correlated BLE/video clock bridge using a hash-identified
+   ordinary offline-download asset and a short simultaneous S21+A35 capture.
+3. Bound Nova's command-hold/watchdog behavior with a short, reversible app
+   disconnect experiment while the mask is unworn.
+4. Monitor app/content/firmware changes and capture again only when a diff
+   exposes a new program, extended command, native library, or firmware.
+
+The N0 acquisition milestone is closed. See
+`reports/lumenate_nova/N0_CLOSEOUT_MANIFEST.md`,
+`reports/lumenate_nova/N0_INVENTORIES.md`, and
+`reports/lumenate_nova/NEXT_STEPS_WITHOUT_PHOTODIODE.md`.
 
 ## AVE boundary
 
