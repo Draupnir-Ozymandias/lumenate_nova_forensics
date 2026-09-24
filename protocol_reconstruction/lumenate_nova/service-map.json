@@ -1,0 +1,128 @@
+{
+  "format": "lumenate-nova-service-map",
+  "format_version": "1.0.0",
+  "reviewed_app_version": "7.2.1",
+  "reviewed_device_firmware": "1.0.4",
+  "handle_scope": "Observed handles are specific to the reviewed firmware GATT layout; UUIDs are protocol identifiers.",
+  "services": [
+    {
+      "uuid": "0000180f-0000-1000-8000-00805f9b34fb",
+      "name": "Battery Service",
+      "characteristics": [
+        {
+          "uuid": "00002a19-0000-1000-8000-00805f9b34fb",
+          "observed_value_handle": "0x0012",
+          "role": "battery_level",
+          "properties": ["read", "notify"],
+          "status": "dynamically_confirmed"
+        }
+      ]
+    },
+    {
+      "uuid": "47bbfb1e-670e-4f81-bfb3-78daffc9a783",
+      "name": "Nova buttons and welcome command",
+      "characteristics": [
+        {
+          "uuid": "964fbffe-6940-4371-8d48-fe43b07ed00b",
+          "observed_value_handle": "0x001a",
+          "role": "physical_brightness_button_events",
+          "properties": ["read", "notify"],
+          "status": "dynamically_confirmed",
+          "observed_payloads": {"0101": "decrease", "0102": "increase"}
+        },
+        {
+          "uuid": "3e25a3bf-bfe1-4c71-97c5-5bdb73fac89e",
+          "observed_value_handle": "0x001d",
+          "role": "welcome_led_command",
+          "properties": ["write_without_response"],
+          "status": "statically_resolved_not_dynamically_observed",
+          "implemented_payload_hex": "0100"
+        },
+        {
+          "uuid": "2b35ef1f-11a6-4089-8cd5-843c5d0c9c55",
+          "observed_value_handle": "0x001f",
+          "role": null,
+          "properties": ["read", "write_without_response", "notify"],
+          "status": "firmware_exposed_current_app_unused",
+          "limitations": "No UUID reference, CCCD write, direct read/write, or notification in the reviewed app and captures."
+        }
+      ]
+    },
+    {
+      "uuid": "3e8ec328-a4b8-4273-a380-47d219f64e9b",
+      "name": "Nova offline sessions",
+      "characteristics": [
+        {
+          "uuid": "2a84aaff-6738-4629-894c-346357b89a0c",
+          "observed_value_handle": "0x002e",
+          "role": "offline_session_selection_and_state",
+          "properties": ["read", "write_without_response", "notify"],
+          "status": "dynamically_confirmed",
+          "values": {"00": "relaxed", "01": "explore", "02": "sleep", "ff": "not_set"},
+          "observed_value_hex": "01"
+        },
+        {
+          "uuid": "51bfc219-feab-4227-8b93-8af8cc5306d4",
+          "observed_value_handle": "0x0031",
+          "role": "offline_session_header",
+          "properties": ["read"],
+          "status": "dynamically_confirmed",
+          "header_encoding": {
+            "byte_order": "little_endian",
+            "minimum_bytes": 16,
+            "fields": ["magic_u32", "version_u32", "session_count_u32", "active_session_index_u32"]
+          },
+          "observed_header_prefix_hex": "4e4c464f010000000000000001000000"
+        }
+      ]
+    },
+    {
+      "uuid": "b568de7c-b6c6-42cb-8303-fcc9cb25007c",
+      "name": "Nova live session control",
+      "characteristics": [
+        {
+          "uuid": "f2c51a4e-2a46-4bef-b18f-cb00c716cfa6",
+          "observed_value_handle": "0x0034",
+          "role": "live_timing_stream",
+          "properties": ["write_without_response"],
+          "status": "dynamically_confirmed"
+        },
+        {
+          "uuid": "12345678-9abc-4def-8012-3456789abcde",
+          "observed_value_handle": "0x0036",
+          "role": "active_playback_notification_channel",
+          "properties": ["notify"],
+          "status": "subscription_behavior_confirmed_payload_semantics_unobserved"
+        },
+        {
+          "uuid": "abcdef01-2345-6789-abcd-ef0123456789",
+          "observed_value_handle": "0x0039",
+          "role": "live_session_active_state",
+          "properties": ["write_without_response"],
+          "status": "dynamically_confirmed",
+          "observed_payloads": {"0a": "active_start_or_resume", "00": "inactive_pause_or_stop"}
+        }
+      ]
+    },
+    {
+      "uuid": "8d53dc1d-1db7-4cd3-868b-8a527460aa84",
+      "name": "Zephyr SMP",
+      "characteristics": [
+        {
+          "uuid": "da2e7828-fbce-4e01-ae9e-261174997c48",
+          "observed_value_handle": "0x003c",
+          "role": "firmware_update_transport",
+          "properties": ["write_without_response", "notify"],
+          "status": "discovered_not_exercised"
+        }
+      ]
+    }
+  ],
+  "evidence": {
+    "static_controller_sha256": "d1ca189bd70ea0464fb51038bce13fdfb83f0f738cf6a00e0f3b305a4c23f14c",
+    "static_device_session_sha256": "8633d7777595ed608a7a09205236b22702449fd5317527995250213c46592742",
+    "firmware_check_hci_current_sha256": "d63253f0308cb5db5725b6c5e40a164162ae87b67494a4f841c05a87126e9729",
+    "firmware_check_hci_rotated_sha256": "2f8d5db219ae79ac8dd9ea1456e8e8af1650d5acc192e65dbc62fc5378d19aad",
+    "report": "reports/lumenate_nova/BLE_CHARACTERISTIC_AUDIT.md"
+  }
+}

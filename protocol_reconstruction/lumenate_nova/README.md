@@ -2,9 +2,12 @@
 
 Only reviewed, sanitized artifacts belong here.
 
-Planned durable outputs:
+Durable outputs:
 
-- `service-map.json` — BLE services, characteristics, properties, and evidence IDs;
+- `service-map.json` — reviewed BLE services, characteristics, properties, roles, and evidence hashes;
+
+Planned additions:
+
 - `command-dictionary.json` — packet forms, field interpretations, and alternatives;
 - `state-machine.md` — connection and session-control state transitions;
 - `sessions/*.json` — contract-valid reconstructed sessions;

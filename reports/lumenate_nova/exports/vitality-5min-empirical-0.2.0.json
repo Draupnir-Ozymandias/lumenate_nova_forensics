@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "ave_evidence_schema_version": "1.0.0",
   "export_id": "ln_b49b877ea929667d",
-  "created_at": "2026-09-19T18:40:29Z",
+  "created_at": "2026-09-24T14:12:53Z",
   "device": {
     "product": "Lumenate Nova",
     "app_package": "com.lumenate.lumenateaa",
@@ -99,6 +99,50 @@
       "resolution_ms": 8.333333,
       "evidence_ids": [
         "ave_0ec37c9346327df3"
+      ]
+    },
+    {
+      "clock_id": "ble-correlated-capture-ms",
+      "kind": "ble_capture",
+      "monotonic": true,
+      "unit": "ms",
+      "origin": "2026-09-24 correlated-run active-state write at HCI epoch 1790241818.356861; Android's local-time btsnoop encoding is treated only as a within-run clock.",
+      "resolution_ms": 0.001,
+      "evidence_ids": [
+        "ave_57528d1a5af4d899"
+      ]
+    },
+    {
+      "clock_id": "correlated-optical-video-ms",
+      "kind": "optical_measurement",
+      "monotonic": true,
+      "unit": "ms",
+      "origin": "Start of the simultaneous 2026-09-24 S21 Vitality video.",
+      "resolution_ms": 8.333333,
+      "evidence_ids": [
+        "ave_57528d1a5af4d899"
+      ]
+    },
+    {
+      "clock_id": "ble-disconnect-capture-ms",
+      "kind": "ble_capture",
+      "monotonic": true,
+      "unit": "ms",
+      "origin": "2026-09-24 disconnect-run active-state write at HCI epoch 1790244078.072023; elapsed time is authoritative within the run.",
+      "resolution_ms": 0.001,
+      "evidence_ids": [
+        "ave_3fe239e4a6f8785e"
+      ]
+    },
+    {
+      "clock_id": "disconnect-optical-video-ms",
+      "kind": "optical_measurement",
+      "monotonic": true,
+      "unit": "ms",
+      "origin": "Start of the successful 2026-09-24 S21 disconnect video.",
+      "resolution_ms": 8.333333,
+      "evidence_ids": [
+        "ave_3fe239e4a6f8785e"
       ]
     }
   ],
@@ -2418,6 +2462,69 @@
         "ave_e93d512211639e46",
         "ave_c7cf4b7e3b1e7b45"
       ]
+    },
+    {
+      "anchor_id": "correlated-run-ble-active-to-media",
+      "from_clock_id": "ble-correlated-capture-ms",
+      "from_time_ms": 0,
+      "to_clock_id": "audio-media-position-ms",
+      "to_time_ms": 3.861,
+      "uncertainty_ms": 5,
+      "method": "The HCI active-state write at 09:23:38.356861 was paired to the Android MediaSession PLAYING position-zero event at 09:23:38.353 in the same bugreport.",
+      "evidence_ids": [
+        "ave_57528d1a5af4d899"
+      ]
+    },
+    {
+      "anchor_id": "correlated-video-to-audio-early",
+      "from_clock_id": "correlated-optical-video-ms",
+      "from_time_ms": 8047.75,
+      "to_clock_id": "audio-media-position-ms",
+      "to_time_ms": 44,
+      "uncertainty_ms": 20,
+      "method": "Normalized cross-correlation maps decoded-reference time zero to S21 video time 8.047750 s; the verified audio stream begins at media position 44 ms.",
+      "evidence_ids": [
+        "ave_57528d1a5af4d899",
+        "ave_d2750e72d53836a8"
+      ]
+    },
+    {
+      "anchor_id": "correlated-video-to-audio-late",
+      "from_clock_id": "correlated-optical-video-ms",
+      "from_time_ms": 83047.625,
+      "to_clock_id": "audio-media-position-ms",
+      "to_time_ms": 75044,
+      "uncertainty_ms": 20,
+      "method": "A late 20-second local cross-correlation maps decoded-reference time 75 s to S21 video time 83.047625 s.",
+      "evidence_ids": [
+        "ave_57528d1a5af4d899",
+        "ave_d2750e72d53836a8"
+      ]
+    },
+    {
+      "anchor_id": "disconnect-video-to-audio",
+      "from_clock_id": "disconnect-optical-video-ms",
+      "from_time_ms": 6961.875,
+      "to_clock_id": "audio-media-position-ms",
+      "to_time_ms": 44,
+      "uncertainty_ms": 20,
+      "method": "Normalized cross-correlation maps decoded-reference time zero to disconnect-video time 6.961875 s; the verified audio stream begins at media position 44 ms.",
+      "evidence_ids": [
+        "ave_3fe239e4a6f8785e",
+        "ave_d2750e72d53836a8"
+      ]
+    },
+    {
+      "anchor_id": "disconnect-ble-active-to-video",
+      "from_clock_id": "ble-disconnect-capture-ms",
+      "from_time_ms": 0,
+      "to_clock_id": "disconnect-optical-video-ms",
+      "to_time_ms": 6968.898,
+      "uncertainty_ms": 20,
+      "method": "Pair the HCI active write at 10:01:18.072023 with the MediaSession position-zero event at 10:01:18.021, then map media position zero to S21 video time 6.917875 s.",
+      "evidence_ids": [
+        "ave_3fe239e4a6f8785e"
+      ]
     }
   ],
   "provenance": {
@@ -2477,6 +2584,38 @@
       {
         "source_id": "vitality-s21-120fps-1-500",
         "sha256": "d332a84e2e363d56d0ddd2a248a4393169c3431ca60ee7c45b5aaf68c3a881fd"
+      },
+      {
+        "source_id": "vitality-correlated-s21-video",
+        "sha256": "024e8cbfdbfeef3a3ff53235e5490753ad0579c0f36253dedf2e3dcd6d0bee11"
+      },
+      {
+        "source_id": "vitality-correlated-btsnoop",
+        "sha256": "f4699c289fb9d42bb6418af1d3affcceb727643959f9d4fc6821a758f5ea3ea3"
+      },
+      {
+        "source_id": "vitality-correlated-app-writes",
+        "sha256": "603237f02eeb14e8855a127226b464f111b58c40e809fec0af5d7406e778337d"
+      },
+      {
+        "source_id": "vitality-correlated-dumpstate",
+        "sha256": "16abe2346c58d0245e463c2275fec5b4bb1ade2600e9b17ce24bdf32102f2475"
+      },
+      {
+        "source_id": "vitality-disconnect-s21-video",
+        "sha256": "6ac885d0b40ad879347b0bc6526f6165af48b475397a05ab3b87755e707f4dba"
+      },
+      {
+        "source_id": "vitality-disconnect-btsnoop",
+        "sha256": "8b70f60c6b25946b1922f71d9555558544b4526f3704bfa0cbef3ddfebfaa526"
+      },
+      {
+        "source_id": "vitality-disconnect-app-writes",
+        "sha256": "7a8afed355552fcbf73b42e90876ff9143b72b5c47d784738237960abde0b2c9"
+      },
+      {
+        "source_id": "vitality-disconnect-dumpstate",
+        "sha256": "29770db474b477e75398f6ec023c97d317bc1f9677cdff06bf46d5f116526cb9"
       }
     ],
     "acquisition_notes": [
@@ -2485,18 +2624,20 @@
       "The runtime package and decompiled declaration are both Lumenate 7.2.1 (400).",
       "The 7.2.1 Vitality declaration and StrobeManager are byte-for-byte identical to their acquired 7.0.0 counterparts.",
       "A complementary full-session S21 recording physically measured the four emitter cores at approximately 120 fps.",
+      "A 2026-09-24 simultaneous A35 HCI plus S21 video/audio run established a bounded BLE/audio/video common clock over the first 98 seconds of Vitality.",
+      "A separate controlled 2026-09-24 run measured firmware 1.0.4 light-off behavior after forced BLE loss without normal zero/inactive writes.",
       "Signed media URLs, Bluetooth addresses, phone identifiers, and audio bytes are intentionally excluded."
     ]
   },
   "confidence": {
     "level": "L4",
     "score": 0.98,
-    "method": "The full runtime-version declaration is confirmed across all 32 active segments in a natural five-minute BLE capture and a separate full-session S21 recording physically confirms frequency and four-emitter synchrony at 8.33 ms resolution."
+    "method": "The full runtime-version declaration is confirmed across all 32 active segments in a natural five-minute BLE capture; full-session S21 recordings confirm frequency and four-emitter synchrony, a simultaneous run binds BLE/audio/video clocks, and a controlled forced-disconnect run bounds firmware 1.0.4 safe-stop behavior."
   },
   "limitations": [
     "No photodiode measurement was made; S21 video physically verifies frequency and frame-scale synchrony but cannot resolve subframe phase or provide calibrated duty cycle or intensity.",
     "Brightness-button level, LED intensity calibration, color, and firmware version are unknown.",
-    "Runtime audio/light anchors carry 20 ms uncertainty and exclude unknown firmware-to-photon latency.",
+    "The simultaneous audio/video anchors carry 20 ms uncertainty; camera sampling and unknown firmware-to-photon latency still prevent a calibrated packet-to-photon claim.",
     "AVE classified the soundtrack as irregular transients; this does not establish intent, efficacy, or physiological response."
   ],
   "ave_evidence": [
@@ -2899,6 +3040,220 @@
         "A 1/500-second exposure can miss narrow pulses between frames.",
         "The recording is not a calibrated intensity or duty-cycle measurement.",
         "The exposure settings are operator-recalled rather than independently embedded in the file."
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "evidence_id": "ave_57528d1a5af4d899",
+      "evidence_level": "association",
+      "evidence_type": "audio_ble_optical_clock_bridge",
+      "source_module": "lumenate_nova.vitality_export",
+      "summary": "One simultaneous run maps the verified Vitality audio, BLE command stream, and four-emitter S21 video onto a bounded common timeline.",
+      "scope": {
+        "channels": [
+          "audio",
+          "light-control",
+          "light-emitter-1",
+          "light-emitter-2",
+          "light-emitter-3",
+          "light-emitter-4"
+        ],
+        "time_range_seconds": {
+          "start": 0,
+          "end": 98.276073
+        }
+      },
+      "measurements": [
+        {
+          "name": "video_frame_count",
+          "value": 14223,
+          "unit": "count"
+        },
+        {
+          "name": "nonzero_timing_write_count",
+          "value": 772,
+          "unit": "count"
+        },
+        {
+          "name": "captured_active_segment_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "emitter_rising_edges_each",
+          "value": 963,
+          "unit": "count"
+        },
+        {
+          "name": "same_frame_four_emitter_rising_edges",
+          "value": 960,
+          "unit": "count"
+        },
+        {
+          "name": "binary_disagreement_frames",
+          "value": 13,
+          "unit": "count"
+        },
+        {
+          "name": "minimum_pairwise_luma_correlation",
+          "value": 0.997984,
+          "unit": "correlation"
+        },
+        {
+          "name": "maximum_pairwise_luma_correlation",
+          "value": 0.99987,
+          "unit": "correlation"
+        },
+        {
+          "name": "audio_video_anchor_uncertainty",
+          "value": 20,
+          "unit": "ms"
+        },
+        {
+          "name": "measured_7_5_hz_region",
+          "value": 7.4818,
+          "unit": "Hz"
+        },
+        {
+          "name": "measured_10_5_hz_region",
+          "value": 10.4638,
+          "unit": "Hz"
+        }
+      ],
+      "context": {
+        "runtime_app_version": "7.2.1",
+        "firmware_version": "1.0.4",
+        "camera": "Samsung Galaxy S21 Ultra 5G",
+        "video": "1920x1080 at approximately 120 fps",
+        "classification": "60x60 emitter-core mean luma > 30",
+        "audio_alignment": "Band-limited normalized cross-correlation against the SHA-256-identified Vitality asset"
+      },
+      "confidence": {
+        "score": 0.99,
+        "method": "Cross-correlate the S21 soundtrack to the verified asset, pair Android MediaSession and HCI wall-clock events, and measure four fixed emitter regions on the same S21 media timeline."
+      },
+      "provenance": {
+        "source_ids": [
+          "vitality-correlated-s21-video",
+          "vitality-correlated-btsnoop",
+          "vitality-correlated-app-writes",
+          "vitality-correlated-dumpstate",
+          "vitality-5min-audio"
+        ]
+      },
+      "supporting_evidence_ids": [
+        "ave_d2750e72d53836a8",
+        "ave_e93d512211639e46",
+        "ave_c7cf4b7e3b1e7b45",
+        "ave_0ec37c9346327df3"
+      ],
+      "limitations": [
+        "The 20 ms audio/video anchor uncertainty includes observed local-correlation spread but not calibrated acoustic propagation or Android output latency.",
+        "The 8.33 ms video frame interval and 1/500-second exposure can miss narrow pulses and cannot resolve subframe emitter phase.",
+        "The first camera-detected pulse is not a calibrated packet-to-photon latency measurement."
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "evidence_id": "ave_3fe239e4a6f8785e",
+      "evidence_level": "measurement",
+      "evidence_type": "forced_disconnect_watchdog_behavior",
+      "source_module": "lumenate_nova.vitality_export",
+      "summary": "Nova firmware 1.0.4 retained the final 10.5 Hz command for roughly three observed cycles after forced BLE loss, then stopped all four emitters without an app zero or inactive write.",
+      "scope": {
+        "channels": [
+          "light-control",
+          "light-emitter-1",
+          "light-emitter-2",
+          "light-emitter-3",
+          "light-emitter-4"
+        ],
+        "time_range_seconds": {
+          "start": 0,
+          "end": 45.612136
+        }
+      },
+      "measurements": [
+        {
+          "name": "nonzero_timing_write_count",
+          "value": 334,
+          "unit": "count"
+        },
+        {
+          "name": "last_command_period",
+          "value": 95238,
+          "unit": "microseconds"
+        },
+        {
+          "name": "last_command_on_time",
+          "value": 19048,
+          "unit": "microseconds"
+        },
+        {
+          "name": "last_command_age_at_disconnect",
+          "value": 8572.807,
+          "unit": "ms"
+        },
+        {
+          "name": "post_disconnect_rising_edges_each",
+          "value": 3,
+          "unit": "count"
+        },
+        {
+          "name": "last_rising_edge_after_disconnect",
+          "value": 212.61,
+          "unit": "ms"
+        },
+        {
+          "name": "last_illuminated_frame_after_disconnect",
+          "value": 229.277,
+          "unit": "ms"
+        },
+        {
+          "name": "dark_frames_after_last_illumination",
+          "value": 3427,
+          "unit": "count"
+        },
+        {
+          "name": "minimum_pairwise_luma_correlation",
+          "value": 0.998539,
+          "unit": "correlation"
+        },
+        {
+          "name": "maximum_pairwise_luma_correlation",
+          "value": 0.999982,
+          "unit": "correlation"
+        }
+      ],
+      "context": {
+        "runtime_app_version": "7.2.1",
+        "firmware_version": "1.0.4",
+        "disconnect_reason": "HCI 0x16, local host termination",
+        "normal_zero_or_inactive_write_observed": false,
+        "last_command": "approximately 10.5 Hz at 20% duty",
+        "camera": "Samsung Galaxy S21 Ultra 5G, approximately 120 fps"
+      },
+      "confidence": {
+        "score": 0.98,
+        "method": "Map the HCI disconnect to the verified-audio S21 timeline, then threshold four fixed emitter regions across the disconnect boundary."
+      },
+      "provenance": {
+        "source_ids": [
+          "vitality-disconnect-s21-video",
+          "vitality-disconnect-btsnoop",
+          "vitality-disconnect-app-writes",
+          "vitality-disconnect-dumpstate"
+        ]
+      },
+      "supporting_evidence_ids": [
+        "ave_57528d1a5af4d899",
+        "ave_c7cf4b7e3b1e7b45",
+        "ave_0ec37c9346327df3"
+      ],
+      "limitations": [
+        "The approximately 0.3-second cessation bound is camera-observed, not a calibrated photon-level watchdog timeout.",
+        "Finite 1/500-second exposures at 120 fps can miss narrow pulses between frames.",
+        "The result is bounded to firmware 1.0.4, the compact matched-side path, and the tested 10.5 Hz / 20% command."
       ]
     },
     {

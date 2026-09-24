@@ -40,14 +40,16 @@ Targets:
 
 ## N2 — BLE protocol and device state machine
 
-**Status:** core session-control path documented; unresolved characteristics and
-edge-case recovery remain.
+**Status:** core session-control path, characteristic audit, and firmware 1.0.4
+forced-disconnect watchdog behavior documented; isolated loss and reconnect
+behavior remain.
 
 Capture one-variable-at-a-time experiments and infer framing semantics.
 
 Targets:
 
-- service/characteristic property table;
+- service/characteristic property table (complete for the reviewed GATT map;
+  `0x001f` is explicitly bounded as current-app-unused with unknown semantics);
 - command framing, byte order, counters, checksums, acknowledgements, and notifications;
 - connection lifecycle and recovery behavior;
 - distinction between streamed timing, buffered blocks, and state/status traffic;
@@ -90,13 +92,17 @@ Targets:
 
 ## N5 — Physical validation
 
+**Status:** provisional camera validation and one bounded BLE/audio/video common
+clock are complete; calibrated photon-level measurement remains open.
+
 Compare reconstructed intent with emitted light.
 
 Targets:
 
 - calibrated photodiode/ADC or oscilloscope setup;
 - optical frequency, duty cycle, intensity, transition, and color measurements;
-- synchronized audio, BLE, app, and optical clocks;
+- synchronized audio, BLE, app, and optical clocks (bounded camera/audio bridge
+  complete; calibrated photon timing remains open);
 - error distributions across repetitions and selected operating conditions;
 - explicit safety procedure for photosensitive exposure.
 

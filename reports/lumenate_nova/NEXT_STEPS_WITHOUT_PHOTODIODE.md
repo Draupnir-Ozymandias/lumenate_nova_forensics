@@ -2,35 +2,29 @@
 
 ## Recommendation
 
-Stop broad track scouting. The best return now is a short program that extracts
-new information from existing artifacts, improves cross-clock alignment with
-the S21's audio channel, and probes Nova's app-stream timeout safely. None of
-these substitutes for calibrated N5 optical measurement, but each resolves a
+Stop broad track scouting. The existing-evidence characteristic audit was
+completed on 2026-09-23. The best return now is to improve cross-clock alignment
+with the S21's audio channel and then probe Nova's app-stream timeout safely.
+Neither substitutes for calibrated N5 optical measurement, but each resolves a
 specific open architecture question.
 
 | Rank | Experiment | Expected information gain | Effort / risk |
 |---:|---|---|---|
-| 1 | Resolve remaining custom BLE characteristic roles from existing HCI and smali | Closes N2 command/state gaps without another capture | Low / none to hardware |
-| 2 | Build an audio-correlated packet-to-video clock bridge | Converts existing or one short S21+A35 capture into a bounded common timeline | Medium / low |
-| 3 | Measure stream interruption and hold behavior | Directly bounds Nova's app-session buffering/watchdog behavior | Medium / controlled hardware experiment |
+| Done | Resolve remaining custom BLE characteristic roles from existing HCI and smali | Closed three roles and bounded `0x001f` as current-app-unused | Completed 2026-09-23 |
+| Done | Build an audio-correlated packet-to-video clock bridge | Established one bounded BLE/audio/video timeline over 98 seconds of Vitality | Completed 2026-09-24 |
+| Done | Measure stream interruption and hold behavior | Bounded firmware 1.0.4 link-loss hold to roughly three observed 10.5 Hz cycles | Completed 2026-09-24 |
 | 4 | Add version/content drift detection | Makes future independent-side content, protocol, or firmware changes obvious | Low recurring effort / none |
 | 5 | Seek first-party technical clarification | Could answer independent-channel availability and update policy directly | Low / uncertain response |
 
-## 1. Finish the custom-characteristic dictionary first
+## 1. Custom-characteristic dictionary — completed
 
-Re-index existing captures against all reads, writes, notifications, connection
-events, button presses, battery observations, offline-preset selection, and
-firmware checks. Then trace the remaining UUID references in current-version
-smali. The deliverable should assign or bound the roles still labeled by handles
-or suffixes, especially `0x1d`, `0x1f`, `0x2e`, and `0x31`, with negative
-evidence where a characteristic remained silent.
+The 2026-09-23 audit assigned `0x001d` to the Welcome LEDs command, `0x002e`
+to offline-session selection/state, and `0x0031` to the offline-session header.
+It bounded `0x001f` as firmware-exposed but unused by Android 7.2.1 and silent
+in all reviewed captures. See `BLE_CHARACTERISTIC_AUDIT.md` and the durable
+`protocol_reconstruction/lumenate_nova/service-map.json`.
 
-Why this is first: it consumes no device time, avoids optical uncertainty, and
-improves every later transport experiment. It should precede collection of more
-sessions because otherwise new captures merely reproduce already understood
-compact timing writes.
-
-## 2. Use audio as the common clock bridge
+## 2. Audio as the common clock bridge — completed
 
 The S21 records video and audio on one media timeline. For an app session whose
 exact audio asset is lawfully acquired through the app's ordinary offline
@@ -50,11 +44,18 @@ Best procedure for one short run:
 6. report camera-frame quantization, exposure/rolling-shutter limits, audio
    resampling uncertainty, HCI clock uncertainty, and the combined bound.
 
-This can test whether commanded transitions and observed frame transitions are
-consistent to roughly a video-frame scale. It cannot measure absolute optical
-intensity, true pulse width, subframe left/right phase, or electrical latency.
+The 2026-09-24 run completed this step. It captured 772 nonzero BLE timing
+writes, a 118.529-second S21 audio/video recording, and 14,223 optical frames.
+Cross-correlation against the verified Vitality asset established two
+audio/video anchors with 20 ms uncertainty. All four emitter regions produced
+963 rising edges, 960 of which occurred on the same frame. See
+`physical_validation/AUDIO_CORRELATED_VITALITY_2026-09-24.md`.
 
-## 3. Bound Nova's live-stream hold/watchdog behavior
+The result tests commanded frequency and observed frame timing on one common
+clock. It still cannot measure absolute optical intensity, true pulse width,
+subframe left/right phase, or calibrated electrical/packet-to-photon latency.
+
+## 3. Nova live-stream hold/watchdog behavior — completed
 
 Use a short, steady app-driven segment at a clearly identifiable frequency.
 While the S21 records, interrupt the A35–Nova link in a controlled, reversible
@@ -63,11 +64,13 @@ or power interruption. Measure whether emission stops immediately, holds the
 last period/on-time command, fades, or changes to a safe state, and for how long.
 Repeat once for confirmation.
 
-This directly addresses N4's largest firmware-boundary unknown: how much command
-state Nova retains and what it does when a cycle-cadence stream disappears. Keep
-the mask unworn and pointed away from people; abort on heating, unexpected
-behavior, or failure to reconnect. This experiment does not require an OTA,
-firmware modification, or protocol injection.
+The 2026-09-24 controlled run completed this step. Bluetooth was disabled at
+Vitality media position 45.017 seconds while Nova held a 10.5 Hz / 20% command.
+No normal zero-timing or inactive-state write was sent. All four emitters
+produced three additional synchronized rising edges, with the last illuminated
+frame approximately 229 ms after the mapped HCI disconnect, and then remained
+dark. Lumenate paused automatically after link loss. See
+`DISCONNECT_HOLD_BEHAVIOR.md`.
 
 ## 4. Monitor changes instead of sampling more current tracks
 
@@ -105,7 +108,6 @@ whether more capture work is warranted.
 - protocol injection merely to force the 40-byte path, unless separately scoped
   with device-safety limits.
 
-The recommended immediate sequence is: existing-evidence characteristic audit,
-then one audio-correlated S21+A35 run, then one controlled disconnect run. A
+The next low-risk engineering task is version/content drift detection. A
 photodiode/ADC later remains the correct tool for calibrated packet-to-photon
 latency, pulse shape, duty cycle, and independent-emitter phase.

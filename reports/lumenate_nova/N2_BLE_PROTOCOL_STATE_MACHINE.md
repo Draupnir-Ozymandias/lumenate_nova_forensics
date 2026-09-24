@@ -15,10 +15,10 @@ layout and must not be assumed stable across versions.
 |---|---|---:|---|
 | Battery `180f` | Battery Level `2a19` | `0x0012` | Periodic device-to-app battery notification |
 | Custom `47bbfb1e-670e-4f81-bfb3-78daffc9a783` | `964fbffe-6940-4371-8d48-fe43b07ed00b` | `0x001a` | Physical brightness-button notification |
-| Custom `47bbfb1e-670e-4f81-bfb3-78daffc9a783` | `3e25a3bf-bfe1-4c71-97c5-5bdb73fac89e` | `0x001d` | Present; semantic role not assigned |
-| Custom `47bbfb1e-670e-4f81-bfb3-78daffc9a783` | `2b35ef1f-11a6-4089-8cd5-843c5d0c9c55` | `0x001f` | Present; semantic role not assigned |
-| Custom `3e8ec328-a4b8-4273-a380-47d219f64e9b` | `2a84aaff-6738-4629-894c-346357b89a0c` | `0x002e` | App subscribes; exact payload semantics unresolved |
-| Custom `3e8ec328-a4b8-4273-a380-47d219f64e9b` | `51bfc219-feab-4227-8b93-8af8cc5306d4` | `0x0031` | Present; semantic role not assigned |
+| Custom `47bbfb1e-670e-4f81-bfb3-78daffc9a783` | `3e25a3bf-bfe1-4c71-97c5-5bdb73fac89e` | `0x001d` | Welcome-LED command; static payload `01 00`, not dynamically observed |
+| Custom `47bbfb1e-670e-4f81-bfb3-78daffc9a783` | `2b35ef1f-11a6-4089-8cd5-843c5d0c9c55` | `0x001f` | Firmware-exposed but unused by the current app; exact role unresolved |
+| Custom `3e8ec328-a4b8-4273-a380-47d219f64e9b` | `2a84aaff-6738-4629-894c-346357b89a0c` | `0x002e` | Offline-session selection/state; `00` Relaxed, `01` Explore, `02` Sleep, `ff` unset |
+| Custom `3e8ec328-a4b8-4273-a380-47d219f64e9b` | `51bfc219-feab-4227-8b93-8af8cc5306d4` | `0x0031` | Read-only offline-session header: magic, version, count, active index |
 | Session control `b568de7c-b6c6-42cb-8303-fcc9cb25007c` | `f2c51a4e-2a46-4bef-b18f-cb00c716cfa6` | `0x0034` | App-to-mask timing stream, Write Without Response |
 | Session control `b568de7c-b6c6-42cb-8303-fcc9cb25007c` | `12345678-9abc-4def-8012-3456789abcde` | `0x0036` | Notification subscription follows active playback state |
 | Session control `b568de7c-b6c6-42cb-8303-fcc9cb25007c` | `abcdef01-2345-6789-abcd-ef0123456789` | `0x0039` | App-to-mask active/inactive state |
@@ -41,6 +41,9 @@ not published.
 | Mask → app | Brightness (`0x001a`) | `0101` | Physical brightness-decrease interaction |
 | Mask → app | Brightness (`0x001a`) | `0102` | Physical brightness-increase interaction |
 | Mask → app | Battery (`0x0012`) | one-byte level | Periodic battery level |
+| App → mask | Welcome command (`0x001d`) | `0100` | Welcome LEDs command, statically implemented but not captured |
+| App ↔ mask | Offline selection (`0x002e`) | one byte | Relaxed `00`, Explore `01`, Sleep `02`, not set `ff`; current read returned Explore |
+| Mask → app | Offline header (`0x0031`) | first 16 bytes are four little-endian `uint32` values | Magic, format version, session count, active session index |
 
 Duplicate brightness notifications occurred within subsecond clusters in one
 capture, so notification count is not universally treated as physical press
@@ -58,6 +61,11 @@ disconnected
        ↔ paused (`00`; zero timing; stream suppressed)
   → stopped (`00`; zero timing; no later resume)
   → disconnected
+
+active streaming
+  → forced link loss (no `00` and no zero-timing write)
+  → final timing retained for roughly three observed 10.5 Hz cycles
+  → firmware-side light-off watchdog state
 ```
 
 The state byte alone does not distinguish start from resume or pause from stop.
@@ -109,6 +117,14 @@ No fatal app exception or native crash accompanied those events. Status 8 is
 retained as an observed disconnection outcome, not assigned a device-specific
 root cause.
 
+A controlled Android Bluetooth-off run on firmware 1.0.4 produced HCI reason
+`0x16` without a preceding zero-timing or inactive-state write. Lumenate paused
+approximately 94 ms after the HCI disconnect. The S21 observed three additional
+synchronized 10.5 Hz rising edges; the final illuminated frame mapped about
+229 ms after disconnect, followed by at least 28.6 seconds of darkness. This
+bounds the forced-link-loss path to a short firmware hold and safe stop rather
+than indefinite command retention. See `DISCONNECT_HOLD_BEHAVIOR.md`.
+
 ## Confidence and limitations
 
 - **L4, 0.99:** compact timing layout and active/inactive values, supported by
@@ -117,10 +133,16 @@ root cause.
   supported by paced physical-button sequences and absence of echo writes.
 - **L2, 0.95:** extended independent-side form, established in current-version
   code but not observed in a live capture.
-- **Unresolved:** two custom-characteristic roles, notification payloads other
-  than brightness/battery, firmware buffering/interpolation, retransmission or
-  loss behavior, exact disconnect causes, and any firmware-version-dependent
-  GATT-layout change.
+- **L4, 0.98:** firmware 1.0.4 forced-link-loss hold and light-off behavior,
+  supported by simultaneous HCI, MediaSession, audio, and four-region video.
+- **Unresolved:** the firmware-exposed/current-app-unused `0x001f` role,
+  notification payloads other than brightness/battery, firmware
+  interpolation, isolated packet-loss/retransmission behavior, reconnect during
+  active playback, and any firmware-version-dependent GATT-layout change.
+
+The complete characteristic re-audit, including current-mask offline reads and
+negative evidence, is published in `BLE_CHARACTERISTIC_AUDIT.md`; the sanitized
+machine-readable map is `protocol_reconstruction/lumenate_nova/service-map.json`.
 
 Raw HCI logs and device identifiers remain local. Source hashes and detailed
 per-run timelines are preserved in the controlled-run `ANALYSIS.md` files and

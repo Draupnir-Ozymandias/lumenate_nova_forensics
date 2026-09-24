@@ -104,10 +104,13 @@ captured zero packet/stream suppression on pause and resumed timing afterward.
 
 The phone does not upload the complete observed app-session program to Nova.
 It streams current timing parameters at cycle cadence. Nova must retain enough
-state to execute a received period/on-time command, and it may continue, smooth,
-or guard that state if a later packet is delayed, but the available captures do
-not measure how long. No application-layer acknowledgement accompanies each
-Write Command.
+state to execute a received period/on-time command. A controlled firmware 1.0.4
+link-loss run now measures the guard behavior: with no app zero/inactive write,
+Nova emitted roughly three further synchronized 10.5 Hz cycles and then remained
+dark. The final illuminated frame mapped about 229 ms after HCI disconnect.
+This is a short firmware-side watchdog hold, not evidence that the device buffers
+the future session program. No application-layer acknowledgement accompanies
+each Write Command.
 
 The offline presets are a separate firmware-resident path and must not be used
 to infer buffering behavior for app-driven sessions.
@@ -119,11 +122,11 @@ to infer buffering behavior for app-driven sessions.
   complete-session BLE agreement.
 - **L4 with physical corroboration, 0.98:** Nova executes closely matching
   frequency and synchronous four-emitter timing in the measured sessions.
-- **Unresolved:** device timer implementation, buffer timeout, packet-loss
-  behavior, subframe left/right phase, calibrated duty/intensity, electrical
+- **Unresolved:** device timer implementation, isolated packet-loss behavior,
+  watchdog dependence on frequency or command form, subframe left/right phase,
+  calibrated duty/intensity, electrical
   limits, bootloader signature policy, rollback, and recovery behavior.
 - Ghidra output is a reviewed derivative of a stripped optimized binary; names
   preserved in exports and strings are stronger than automatically inferred
   local variable types. Conclusions are cross-checked against smali and HCI
   behavior rather than resting on decompiler output alone.
-

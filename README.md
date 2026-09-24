@@ -19,10 +19,17 @@ established:
 - complete-session Vitality declaration and BLE reconstruction under released
   contract `0.2.0`;
 - physical four-emitter synchrony measurements for Vitality, Deep Exploration,
-  Spirit, and the offline Explore preset; and
+  Spirit, and the offline Explore preset;
+- a simultaneous Vitality BLE/audio/video clock bridge with bounded 20 ms
+  audio/video anchors;
+- a firmware 1.0.4 forced-disconnect watchdog measurement showing a short
+  three-cycle hold followed by light-off; and
 - an active server-mediated MCUmgr/SMP firmware-update path in Android 7.2.1.
 
 See [PROJECT.md](PROJECT.md) for the operating model, [ROADMAP.md](ROADMAP.md) for milestones, [reports/lumenate_nova/N0_RECONNAISSANCE.md](reports/lumenate_nova/N0_RECONNAISSANCE.md) for the evidence baseline, and [reports/lumenate_nova/EVIDENCE_STATUS_2026-09-22.md](reports/lumenate_nova/EVIDENCE_STATUS_2026-09-22.md) for the consolidated current assessment.
+
+The simultaneous clock-bridge result is documented in
+[physical_validation/AUDIO_CORRELATED_VITALITY_2026-09-24.md](physical_validation/AUDIO_CORRELATED_VITALITY_2026-09-24.md).
 
 ## Repository map
 
@@ -42,14 +49,10 @@ Raw or proprietary evidence stays outside Git. Every publishable conclusion must
 
 ## Immediate work
 
-1. Resolve the remaining custom-characteristic roles from existing HCI and
-   current-version smali.
-2. Build one audio-correlated BLE/video clock bridge using a hash-identified
-   ordinary offline-download asset and a short simultaneous S21+A35 capture.
-3. Bound Nova's command-hold/watchdog behavior with a short, reversible app
-   disconnect experiment while the mask is unworn.
-4. Monitor app/content/firmware changes and capture again only when a diff
+1. Monitor app/content/firmware changes and capture again only when a diff
    exposes a new program, extended command, native library, or firmware.
+2. Repeat calibrated packet-to-photon work when a suitable optical sensor is
+   available.
 
 The N0 acquisition milestone is closed. See
 `reports/lumenate_nova/N0_CLOSEOUT_MANIFEST.md`,
